@@ -7,30 +7,11 @@ import (
 	"time"
 )
 
-func AppendObjectStart(b []byte) []byte {
+func AppendNull(b []byte) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' {
-		return append(b, ',', '{')
+		return append(b, ",null"...)
 	}
-	return append(b, '{')
-}
-
-func AppendObjectEnd(b []byte) []byte {
-	return append(b, '}')
-}
-
-func AppendArrayStart(b []byte) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
-		return append(b, ',', '[')
-	}
-	return append(b, '[')
-}
-
-func AppendArrayEnd(b []byte) []byte {
-	return append(b, ']')
-}
-
-func AppendKey(b []byte, key string) []byte {
-	return append(AppendString(b, key), ':')
+	return append(b, "null"...)
 }
 
 func AppendBool(b []byte, val bool) []byte {
@@ -49,13 +30,6 @@ func AppendBool(b []byte, val bool) []byte {
 	default:
 		return append(b, "false"...)
 	}
-}
-
-func AppendNull(b []byte) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
-		return append(b, ",null"...)
-	}
-	return append(b, "null"...)
 }
 
 func AppendInt(b []byte, val int64) []byte {
@@ -101,19 +75,20 @@ func AppendUUID(b []byte, val [16]byte) []byte {
 		b = append(b, ',')
 	}
 
-	// TODO use grow len first then write directly to slice
-	var a [38]byte
-	a[0] = '"'
-	hex.Encode(a[1:9], val[0:4])
-	a[9] = '-'
-	hex.Encode(a[10:14], val[4:6])
-	a[14] = '-'
-	hex.Encode(a[15:19], val[6:8])
-	a[19] = '-'
-	hex.Encode(a[20:24], val[8:10])
-	a[2] = '-'
-	hex.Encode(a[25:37], val[10:16])
-	a[37] = '"'
+	i := len(b)
+	b = growLen(b, 38)
 
-	return append(b, a[:]...)
+	b[i+0] = '"'
+	hex.Encode(b[i+1:i+9], val[0:4])
+	b[i+9] = '-'
+	hex.Encode(b[i+10:i+14], val[4:6])
+	b[i+14] = '-'
+	hex.Encode(b[i+15:i+19], val[6:8])
+	b[i+19] = '-'
+	hex.Encode(b[i+20:i+24], val[8:10])
+	b[i+24] = '-'
+	hex.Encode(b[i+25:i+37], val[10:16])
+	b[i+37] = '"'
+
+	return b
 }

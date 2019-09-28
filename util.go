@@ -10,7 +10,7 @@ func lastChar(b []byte) byte {
 	return b[l-1]
 }
 
-// func growBytesCap(b []byte, n int) []byte {
+// func growCap(b []byte, n int) []byte {
 // 	l, c := len(b), cap(b)
 // 	if l+n <= c {
 // 		return b
@@ -21,13 +21,13 @@ func lastChar(b []byte) byte {
 // 	return newBuf
 // }
 
-// func growBytesLen(b []byte, n int) []byte {
-// 	l, c := len(b), cap(b)
-// 	if l+n <= c {
-// 		return b[:l+n]
-// 	}
-// 	newCap := l + n // TODO better growing
-// 	newBuf := make([]byte, l+n, newCap)
-// 	copy(newBuf, b)
-// 	return newBuf
-// }
+func growLen(b []byte, n int) []byte {
+	l, c := len(b), cap(b)
+	if l+n <= c {
+		return b[:l+n]
+	}
+	newCap := l + n // TODO better growing
+	newBuf := make([]byte, l+n, newCap)
+	copy(newBuf, b)
+	return newBuf
+}
