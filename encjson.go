@@ -65,9 +65,12 @@ func AppendFloat(b []byte, val float64) []byte {
 
 func AppendTime(b []byte, t time.Time, layout string) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' {
-		b = append(b, ',')
+		b = append(b, ',', '"')
+	} else {
+		b = append(b, '"')
 	}
-	return t.AppendFormat(b, layout)
+	b = t.AppendFormat(b, layout)
+	return append(b, '"')
 }
 
 func AppendUUID(b []byte, val [16]byte) []byte {
