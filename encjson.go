@@ -8,14 +8,14 @@ import (
 )
 
 func AppendNull(b []byte) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		return append(b, ",null"...)
 	}
 	return append(b, "null"...)
 }
 
 func AppendBool(b []byte, val bool) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		switch val {
 		case true:
 			return append(b, ",true"...)
@@ -33,21 +33,21 @@ func AppendBool(b []byte, val bool) []byte {
 }
 
 func AppendInt(b []byte, val int64) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
 	}
 	return strconv.AppendInt(b, val, 10)
 }
 
 func AppendUint(b []byte, val uint64) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
 	}
 	return strconv.AppendUint(b, val, 10)
 }
 
 func AppendFloat(b []byte, val float64) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
 	}
 	// Special floats like NaN and Inf have to be written as quoted strings
@@ -64,7 +64,7 @@ func AppendFloat(b []byte, val float64) []byte {
 }
 
 func AppendTime(b []byte, t time.Time, layout string) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',', '"')
 	} else {
 		b = append(b, '"')
@@ -74,7 +74,7 @@ func AppendTime(b []byte, t time.Time, layout string) []byte {
 }
 
 func AppendUUID(b []byte, val [16]byte) []byte {
-	if l := len(b); l > 0 && b[l-1] != ':' {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
 	}
 
