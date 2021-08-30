@@ -1,10 +1,9 @@
 package encjson
 
 import (
+	"bytes"
 	"encoding/json"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func refEncodeString(s string) []byte {
@@ -29,7 +28,9 @@ func Test_String(t *testing.T) {
 		t.Run(str, func(t *testing.T) {
 			expected := refEncodeString(str)
 			actual := String(str)
-			assert.Equal(t, string(expected), string(actual), "encoding string")
+			if !bytes.Equal(expected, actual) {
+				t.Fatal("encoding string")
+			}
 		})
 	}
 }
@@ -39,7 +40,9 @@ func Test_AppendStringBytes(t *testing.T) {
 		t.Run(str, func(t *testing.T) {
 			expected := refEncodeString(str)
 			actual := AppendStringBytes(nil, []byte(str))
-			assert.Equal(t, string(expected), string(actual), "encoding string from bytes")
+			if !bytes.Equal(expected, actual) {
+				t.Fatal("encoding string from bytes")
+			}
 		})
 	}
 }
@@ -48,7 +51,9 @@ func Test_StringNeedsEscaping(t *testing.T) {
 	for str, expected := range testStringsEscape {
 		t.Run(str, func(t *testing.T) {
 			actual := StringNeedsEscaping(str)
-			assert.Equal(t, expected, actual, "string needs escaping")
+			if expected != actual {
+				t.Fatal("string needs escaping")
+			}
 		})
 	}
 }
@@ -66,7 +71,9 @@ func Test_AppendString(t *testing.T) {
 	for buf, expected := range testCases {
 		t.Run(buf, func(t *testing.T) {
 			actual := string(AppendString([]byte(buf), str))
-			assert.Equal(t, expected, actual, "appending string")
+			if expected != actual {
+				t.Fatal("appending string")
+			}
 		})
 	}
 }
