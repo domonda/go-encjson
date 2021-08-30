@@ -25,6 +25,19 @@ func AppendString(b []byte, s string) []byte {
 
 	for i, r := range s {
 		if l := utf8.RuneLen(r); l > 1 {
+			// U+2028 is LINE SEPARATOR.
+			// U+2029 is PARAGRAPH SEPARATOR.
+			// They are both technically valid characters in JSON strings,
+			// but don't work in JSONP, which has to be evaluated as JavaScript,
+			// and can lead to security holes there. It is valid JSON to
+			// escape them, so we do so unconditionally.
+			// See http://timelessrepo.com/json-isnt-a-javascript-subset for discussion.
+			if r == '\u2028' || r == '\u2029' {
+				b = append(b, `\u202`...)
+				b = append(b, hexChars[r&0xF])
+				continue
+			}
+
 			b = append(b, s[i:i+l]...)
 			continue
 		}
@@ -73,7 +86,19 @@ func AppendStringBytes(b []byte, s []byte) []byte {
 
 	for r, l := utf8.DecodeRune(s); l > 0; {
 		if l > 1 {
-			b = append(b, s[:l]...)
+			// U+2028 is LINE SEPARATOR.
+			// U+2029 is PARAGRAPH SEPARATOR.
+			// They are both technically valid characters in JSON strings,
+			// but don't work in JSONP, which has to be evaluated as JavaScript,
+			// and can lead to security holes there. It is valid JSON to
+			// escape them, so we do so unconditionally.
+			// See http://timelessrepo.com/json-isnt-a-javascript-subset for discussion.
+			if r == '\u2028' || r == '\u2029' {
+				b = append(b, `\u202`...)
+				b = append(b, hexChars[r&0xF])
+			} else {
+				b = append(b, s[:l]...)
+			}
 
 			s = s[l:]
 			r, l = utf8.DecodeRune(s)
