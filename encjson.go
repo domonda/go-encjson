@@ -96,6 +96,13 @@ func AppendUUID(b []byte, val [16]byte) []byte {
 	return b
 }
 
+func AppendJSON(b []byte, val []byte) []byte {
+	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
+		b = append(b, ',')
+	}
+	return append(b, val...)
+}
+
 func growLen(b []byte, n int) []byte {
 	l, c := len(b), cap(b)
 	if l+n <= c {
