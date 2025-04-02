@@ -95,3 +95,25 @@ func AppendUUID(b []byte, val [16]byte) []byte {
 
 	return b
 }
+
+func growLen(b []byte, n int) []byte {
+	l, c := len(b), cap(b)
+	if l+n <= c {
+		return b[:l+n]
+	}
+	newCap := l + n // TODO better growing
+	newBuf := make([]byte, l+n, newCap)
+	copy(newBuf, b)
+	return newBuf
+}
+
+// func growCap(b []byte, n int) []byte {
+// 	l, c := len(b), cap(b)
+// 	if l+n <= c {
+// 		return b
+// 	}
+// 	newCap := l + n // TODO better growing
+// 	newBuf := make([]byte, l, newCap)
+// 	copy(newBuf, b)
+// 	return newBuf
+// }

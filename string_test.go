@@ -23,42 +23,7 @@ var testStringsEscape = map[string]bool{
 	`0123456789`:     false,
 }
 
-func Test_String(t *testing.T) {
-	for str := range testStringsEscape {
-		t.Run(str, func(t *testing.T) {
-			expected := refEncodeString(str)
-			actual := String(str)
-			if !bytes.Equal(expected, actual) {
-				t.Fatal("encoding string")
-			}
-		})
-	}
-}
-
-func Test_AppendStringBytes(t *testing.T) {
-	for str := range testStringsEscape {
-		t.Run(str, func(t *testing.T) {
-			expected := refEncodeString(str)
-			actual := AppendStringBytes(nil, []byte(str))
-			if !bytes.Equal(expected, actual) {
-				t.Fatal("encoding string from bytes")
-			}
-		})
-	}
-}
-
-func Test_StringNeedsEscaping(t *testing.T) {
-	for str, expected := range testStringsEscape {
-		t.Run(str, func(t *testing.T) {
-			actual := StringNeedsEscaping(str)
-			if expected != actual {
-				t.Fatal("string needs escaping")
-			}
-		})
-	}
-}
-
-func Test_AppendString(t *testing.T) {
+func TestAppendString(t *testing.T) {
 	str := `"Hello World!"`
 	testCases := map[string]string{
 		``:  `"\"Hello World!\""`,
@@ -73,6 +38,38 @@ func Test_AppendString(t *testing.T) {
 			actual := string(AppendString([]byte(buf), str))
 			if expected != actual {
 				t.Fatal("appending string")
+			}
+		})
+	}
+	for str := range testStringsEscape {
+		t.Run(str, func(t *testing.T) {
+			expected := refEncodeString(str)
+			actual := AppendString(nil, str)
+			if !bytes.Equal(expected, actual) {
+				t.Fatal("encoding string")
+			}
+		})
+	}
+}
+
+func TestAppendStringBytes(t *testing.T) {
+	for str := range testStringsEscape {
+		t.Run(str, func(t *testing.T) {
+			expected := refEncodeString(str)
+			actual := AppendStringBytes(nil, []byte(str))
+			if !bytes.Equal(expected, actual) {
+				t.Fatal("encoding string from bytes")
+			}
+		})
+	}
+}
+
+func TestStringNeedsEscaping(t *testing.T) {
+	for str, expected := range testStringsEscape {
+		t.Run(str, func(t *testing.T) {
+			actual := StringNeedsEscaping(str)
+			if expected != actual {
+				t.Fatal("string needs escaping")
 			}
 		})
 	}

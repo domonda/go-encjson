@@ -2,6 +2,8 @@ package encjson
 
 import "unicode/utf8"
 
+const hexChars = "0123456789ABCDEF"
+
 func StringNeedsEscaping(s string) bool {
 	for _, r := range s {
 		if r < 0x20 || r == '\\' || r == '"' {
@@ -9,10 +11,6 @@ func StringNeedsEscaping(s string) bool {
 		}
 	}
 	return false
-}
-
-func String(s string) []byte {
-	return AppendString(nil, s)
 }
 
 func AppendString(b []byte, s string) []byte {
@@ -140,4 +138,12 @@ func AppendStringBytes(b []byte, s []byte) []byte {
 	}
 
 	return append(b, '"')
+}
+
+func lastChar(b []byte) byte {
+	l := len(b)
+	if l == 0 {
+		return 0
+	}
+	return b[l-1]
 }
