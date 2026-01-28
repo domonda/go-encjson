@@ -1,5 +1,10 @@
 # go-encjson
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/domonda/go-encjson.svg)](https://pkg.go.dev/github.com/domonda/go-encjson)
+[![Go Report Card](https://goreportcard.com/badge/github.com/domonda/go-encjson)](https://goreportcard.com/report/github.com/domonda/go-encjson)
+[![Build Status](https://github.com/domonda/go-encjson/actions/workflows/go.yml/badge.svg)](https://github.com/domonda/go-encjson/actions/workflows/go.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Performance optimized JSON encoding in Go.
 
 This package provides low-level functions for building JSON output by appending to byte slices. It's designed for high-performance scenarios where you need fine-grained control over JSON generation without the overhead of reflection-based encoding.
