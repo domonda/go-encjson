@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// AppendNull appends the JSON null literal to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendNull(b []byte) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		return append(b, ",null"...)
@@ -14,6 +16,8 @@ func AppendNull(b []byte) []byte {
 	return append(b, "null"...)
 }
 
+// AppendBool appends the JSON boolean literal "true" or "false" to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendBool(b []byte, val bool) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		switch val {
@@ -32,6 +36,8 @@ func AppendBool(b []byte, val bool) []byte {
 	}
 }
 
+// AppendInt appends the decimal string representation of val to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendInt(b []byte, val int64) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
@@ -39,6 +45,8 @@ func AppendInt(b []byte, val int64) []byte {
 	return strconv.AppendInt(b, val, 10)
 }
 
+// AppendUint appends the decimal string representation of val to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendUint(b []byte, val uint64) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
@@ -46,6 +54,10 @@ func AppendUint(b []byte, val uint64) []byte {
 	return strconv.AppendUint(b, val, 10)
 }
 
+// AppendFloat appends the string representation of val to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
+// Special values NaN, +Inf, and -Inf are encoded as quoted strings "NaN", "+Inf", and "-Inf"
+// since JSON does not support these values natively.
 func AppendFloat(b []byte, val float64) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
@@ -63,6 +75,8 @@ func AppendFloat(b []byte, val float64) []byte {
 	}
 }
 
+// AppendTime appends the time t formatted according to layout as a quoted JSON string to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendTime(b []byte, t time.Time, layout string) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',', '"')
@@ -73,6 +87,9 @@ func AppendTime(b []byte, t time.Time, layout string) []byte {
 	return append(b, '"')
 }
 
+// AppendUUID appends the UUID val formatted as a quoted JSON string in the standard
+// 8-4-4-4-12 hexadecimal format (e.g., "550e8400-e29b-41d4-a716-446655440000") to b.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
 func AppendUUID(b []byte, val [16]byte) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
@@ -96,6 +113,9 @@ func AppendUUID(b []byte, val [16]byte) []byte {
 	return b
 }
 
+// AppendJSON appends raw JSON bytes val to b without any encoding or validation.
+// A comma separator is prepended if the last character of b is not ':', '[', or empty.
+// The caller must ensure val contains valid JSON.
 func AppendJSON(b []byte, val []byte) []byte {
 	if l := len(b); l > 0 && b[l-1] != ':' && b[l-1] != '[' {
 		b = append(b, ',')
@@ -103,6 +123,7 @@ func AppendJSON(b []byte, val []byte) []byte {
 	return append(b, val...)
 }
 
+// growLen grows b by n bytes and returns the extended slice.
 func growLen(b []byte, n int) []byte {
 	l, c := len(b), cap(b)
 	if l+n <= c {
@@ -113,14 +134,3 @@ func growLen(b []byte, n int) []byte {
 	copy(newBuf, b)
 	return newBuf
 }
-
-// func growCap(b []byte, n int) []byte {
-// 	l, c := len(b), cap(b)
-// 	if l+n <= c {
-// 		return b
-// 	}
-// 	newCap := l + n // TODO better growing
-// 	newBuf := make([]byte, l, newCap)
-// 	copy(newBuf, b)
-// 	return newBuf
-// }
