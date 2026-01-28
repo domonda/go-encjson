@@ -43,7 +43,7 @@ var noEscapeTable = [256]bool{
 // (< 0x20), backslash, double quote, and the special Unicode characters U+2028
 // (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR).
 func StringNeedsEscaping(s string) bool {
-	for i := range len(s) {
+	for i := 0; i < len(s); i++ {
 		c := s[i]
 		if c >= 0x80 {
 			// Multi-byte UTF-8, check for U+2028 and U+2029
